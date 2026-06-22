@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Drei's <Html> component resets gl.domElement.style.pointerEvents to null on
+ * every marker mount (when occlude !== 'blending'), undoing any inline-style fix.
+ * A stylesheet rule survives that reset: inline null → browser falls back here.
+ */
+canvas {
+  pointer-events: none;
+}
+
 @layer base {
   :root {
     color-scheme: light;

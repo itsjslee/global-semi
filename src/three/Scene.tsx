@@ -55,13 +55,12 @@ function SceneContents() {
  * intercepts clicks. R3F's event system is re-routed to `eventSource` (a
  * transparent overlay div) so raycasting and OrbitControls still work.
  */
-export function Scene({ eventSource }: { eventSource?: HTMLElement | null }) {
+export function Scene() {
   return (
     <Canvas
       shadows
       dpr={[1, 2]}
       gl={{ alpha: true, antialias: true }}
-      eventSource={eventSource ?? undefined}
       camera={{
         position: [INITIAL.position.x, INITIAL.position.y, INITIAL.position.z],
         fov: 38,
@@ -69,9 +68,6 @@ export function Scene({ eventSource }: { eventSource?: HTMLElement | null }) {
         far: 4000,
       }}
       onCreated={({ gl, scene, camera }) => {
-        // Disable pointer events on the canvas element itself so UI buttons always
-        // win hit-testing. R3F's event system is re-routed to the eventSource div.
-        gl.domElement.style.pointerEvents = 'none'
         gl.toneMapping = THREE.ACESFilmicToneMapping
         gl.toneMappingExposure = 1.05
         scene.background = null
