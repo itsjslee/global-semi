@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: #12293c;
+    color: theme('colors.ink');
+    font-family: theme('fontFamily.sans');
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* The page scrolls to drive the camera waypoint timeline. */
+  body {
+    overscroll-behavior-y: none;
+  }
+}
+
+@layer components {
+  /* Pill-shaped company marker (drei <Html>). */
+  .marker-pill {
+    @apply pointer-events-auto flex select-none items-center gap-3 rounded-full
+           bg-paper/95 py-2 pl-2 pr-4 shadow-marker backdrop-blur-sm
+           ring-1 ring-ink/5 transition-transform duration-200 ease-out;
+  }
+
+  .marker-pill:hover {
+    @apply -translate-y-0.5;
+  }
+
+  .marker-dot {
+    @apply h-5 w-5 shrink-0 rounded-full ring-2 ring-paper;
+  }
+
+  /* Circular corporate-logo chip inside a marker pill. */
+  .marker-logo {
+    @apply grid h-10 w-10 shrink-0 place-items-center overflow-hidden rounded-full ring-2 ring-paper;
+  }
+
+  .marker-name {
+    @apply whitespace-nowrap text-[17px] font-semibold leading-none tracking-tight text-ink;
+  }
+
+  .marker-badge {
+    @apply ml-1 whitespace-nowrap rounded-full px-2 py-0.5 text-[11px]
+           font-bold uppercase leading-none tracking-wider text-paper;
+  }
+
+  /* The little stem under a marker pill. */
+  .marker-stem {
+    @apply mx-auto h-3 w-px bg-ink/30;
+  }
+
+  /* Marker visibility/emphasis (opacity is driven imperatively per frame). */
+  .marker-wrap {
+    transition: opacity 150ms ease-out;
+  }
+  .marker-wrap.is-active .marker-pill {
+    @apply -translate-y-0.5 shadow-card ring-2 ring-mint;
+  }
+  .marker-wrap.is-dim .marker-pill {
+    @apply grayscale;
+  }
+
+  .rail-item {
+    @apply flex cursor-pointer items-center gap-3 rounded-lg px-3 py-1.5
+           text-left transition-colors duration-200;
+  }
+
+  .rail-index {
+    @apply font-display text-[11px] font-semibold tabular-nums tracking-widest2;
+  }
+
+  .rail-label {
+    @apply text-[12px] font-medium uppercase tracking-[0.18em];
+  }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.4; transform: scale(0.7); }
+}
