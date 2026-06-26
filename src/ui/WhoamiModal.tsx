@@ -62,13 +62,13 @@ export function WhoamiModal() {
         </h2>
 
         <div className="mt-6 flex flex-col divide-y divide-ink/8">
-          {/* Creator */}
+          {/* Who Am I */}
           <div className={SECTION}>
-            <p className={LABEL}>Creator</p>
+            <p className={LABEL}>Who Am I</p>
             <p className={BODY}>
-              Built by <span className="font-semibold text-ink">Joshua Lee</span>, a Computer
-              Engineering student at the{' '}
-              <span className="font-semibold text-ink">University of Michigan</span>.
+              I'm a junior studying <span className="font-semibold text-ink">Computer Engineering</span>{' '}
+              with a deep interest in the semiconductor industry, currently a summer intern at{' '}
+              <span className="font-semibold text-ink">Applied Materials</span>.
             </p>
           </div>
 
@@ -76,11 +76,10 @@ export function WhoamiModal() {
           <div className={`${SECTION} pt-5`}>
             <p className={LABEL}>Purpose</p>
             <p className={BODY}>
-              The global semiconductor supply chain is one of the most complex, capital-intensive,
-              and geopolitically critical physical systems humanity has ever built — yet it remains
-              largely invisible. <em>Global Semi</em> exists to make that footprint instantly
-              visual and educational: where the silicon is designed, where the machines are built,
-              where the wafers are fabbed, and where the chips are packaged and shipped.
+              I built <em>Global Semi</em> to create a comprehensive, intuitive global overview of
+              how the capital-intensive semiconductor supply chain actually works — where the
+              silicon is designed, where the machines are built, where the wafers are fabbed, and
+              where the chips are packaged and shipped.
             </p>
           </div>
 
@@ -88,19 +87,18 @@ export function WhoamiModal() {
           <div className={`${SECTION} pt-5`}>
             <p className={LABEL}>Acknowledgments</p>
             <p className={BODY}>
-              This project is a global macro adaptation inspired by the{' '}
-              <span className="font-semibold text-ink">Levels.fyi</span> team's brilliant{' '}
+              Design credit goes to the <span className="font-semibold text-ink">Levels.fyi</span>{' '}
+              team for their phenomenal{' '}
               <a
                 href="https://www.levels.fyi/atlas"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold text-mint underline decoration-mint/40 underline-offset-2 transition-colors hover:decoration-mint"
               >
-                Peninsula Atlas
+                Atlas ("The Peninsula")
               </a>{' '}
-              — their original 3D isometric layout, low-poly art direction, scroll-driven waypoint
-              design, and interactive company marker concept provided the aesthetic and structural
-              blueprint that this map builds upon at a planetary scale.
+              — its layout concept and 3D low-poly aesthetic provided the blueprint this map builds
+              upon at a planetary scale.
             </p>
           </div>
         </div>

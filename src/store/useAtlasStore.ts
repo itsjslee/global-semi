@@ -1,6 +1,5 @@
 import { create } from 'zustand'
 import { WAYPOINTS } from '../data/waypoints'
-import { TRACES } from '../data/traces'
 import { DEFAULT_HUB, HUB_FOR_WAYPOINT, HUB_OF_COMPANY } from '../data/hubs'
 
 export type Mode = 'tour' | 'explore'
@@ -74,17 +73,6 @@ export interface AtlasState {
   scrollProgress: number
   setScroll: (progress: number) => void
 
-  // ── "Trace the Wafer" ───────────────────────────────────────
-  activeTraceId: string
-  setTrace: (id: string) => void
-  /** When true the camera follows the active trace's pulse. */
-  tracePlaying: boolean
-  startTrace: (id?: string) => void
-  stopTrace: () => void
-  /** Pulse position along the active curve, 0..1 (written by CameraRig). */
-  tourProgress: number
-  setTourProgress: (p: number) => void
-
   // ── Selection / hover ───────────────────────────────────────
   activeNode: string | null
   hoverNode: string | null
@@ -127,7 +115,7 @@ export const useAtlasStore = create<AtlasState>((set, get) => ({
           ? HUB_FOR_WAYPOINT[WAYPOINTS[s.activeWaypoint]?.id] ?? s.activeHub
           : s.activeHub
       // Switching views resets transient camera state for a clean re-frame.
-      return { viewMode: view, activeHub: hub, tracePlaying: false, manual: { ...ZERO_OFFSET } }
+      return { viewMode: view, activeHub: hub, manual: { ...ZERO_OFFSET } }
     }),
   toggleViewMode: () => get().setViewMode(get().viewMode === 'macro' ? 'micro' : 'macro'),
 
@@ -143,7 +131,6 @@ export const useAtlasStore = create<AtlasState>((set, get) => ({
     set({
       viewMode: 'micro',
       activeHub: hubId,
-      tracePlaying: false,
       manual: { ...ZERO_OFFSET },
     }),
   exitHub: () =>
@@ -156,7 +143,6 @@ export const useAtlasStore = create<AtlasState>((set, get) => ({
           viewMode: 'micro',
           activeHub: HUB_OF_COMPANY[companyId] ?? s.activeHub,
           activeNode: companyId,
-          tracePlaying: false,
           manual: { ...ZERO_OFFSET },
         }
       }
@@ -167,11 +153,7 @@ export const useAtlasStore = create<AtlasState>((set, get) => ({
   // ── Camera mode ─────────────────────────────────────────────
   mode: 'tour',
   setMode: (mode) =>
-    set((s) =>
-      mode === 'explore'
-        ? { mode, tracePlaying: false }
-        : { mode, manual: { ...ZERO_OFFSET } },
-    ),
+    set(() => (mode === 'explore' ? { mode } : { mode, manual: { ...ZERO_OFFSET } })),
   toggleMode: () => get().setMode(get().mode === 'tour' ? 'explore' : 'tour'),
 
   // ── Scroll-driven waypoint timeline ─────────────────────────
@@ -186,22 +168,6 @@ export const useAtlasStore = create<AtlasState>((set, get) => ({
           { scrollProgress: progress, activeWaypoint: snapped, manual: { ...ZERO_OFFSET } },
     )
   },
-
-  // ── "Trace the Wafer" ───────────────────────────────────────
-  activeTraceId: TRACES[0].id,
-  setTrace: (id) => set({ activeTraceId: id }),
-  tracePlaying: false,
-  startTrace: (id) =>
-    set((s) => ({
-      tracePlaying: true,
-      mode: 'tour', // following the pulse only makes sense in guided mode
-      activeTraceId: id ?? s.activeTraceId,
-      tourProgress: 0,
-      activeNode: null,
-    })),
-  stopTrace: () => set({ tracePlaying: false }),
-  tourProgress: 0,
-  setTourProgress: (p) => set({ tourProgress: p }),
 
   // ── Selection / hover ───────────────────────────────────────
   activeNode: null,
