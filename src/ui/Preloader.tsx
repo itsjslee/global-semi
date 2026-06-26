@@ -70,12 +70,16 @@ export function Preloader() {
   useEffect(() => {
     if (display < 100 || fading) return
     setFading(true)
+  }, [display, fading])
+
+  useEffect(() => {
+    if (!fading) return
     const t = setTimeout(() => {
       setRemoved(true)
       setAppReady()
     }, FADE_MS)
     return () => clearTimeout(t)
-  }, [display, fading, setAppReady])
+  }, [fading, setAppReady])
 
   if (removed) return null
 
@@ -85,7 +89,12 @@ export function Preloader() {
   return (
     <div
       className="fixed inset-0 z-[60] flex flex-col items-center justify-center transition-opacity ease-out"
-      style={{ background: '#FDFCFA', opacity: fading ? 0 : 1, transitionDuration: `${FADE_MS}ms` }}
+      style={{
+        background: '#FDFCFA',
+        opacity: fading ? 0 : 1,
+        pointerEvents: fading ? 'none' : 'auto',
+        transitionDuration: `${FADE_MS}ms`,
+      }}
     >
       <div className="flex w-[320px] max-w-[80vw] flex-col items-center">
         {/* Mountain-ridge accent */}
