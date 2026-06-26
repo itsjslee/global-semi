@@ -108,7 +108,7 @@ export function CameraRig() {
     // ── FOV: narrow toward an isometric feel in micro, widen back in macro ──
     const persp = camera as THREE.PerspectiveCamera
     if (persp.isPerspectiveCamera) {
-      const desiredFov = s.viewMode === 'micro' ? MICRO_FOV : MACRO_FOV
+      const desiredFov = s.renderView === 'micro' ? MICRO_FOV : MACRO_FOV
       if (Math.abs(persp.fov - desiredFov) > 0.05) {
         persp.fov = THREE.MathUtils.damp(persp.fov, desiredFov, 3, dt)
         persp.updateProjectionMatrix()
@@ -118,7 +118,7 @@ export function CameraRig() {
     if (s.mode === 'explore') return // OrbitControls owns the camera
 
     // ── Micro: descend into the active hub's isometric skyline ─────────────
-    if (s.viewMode === 'micro') {
+    if (s.renderView === 'micro') {
       const radius = getHubLayout(s.activeHub).radius
       const iso = isoHubCamera(radius)
       _desiredPos.copy(iso.position)

@@ -16,6 +16,7 @@ import { WhoamiModal } from './ui/WhoamiModal'
 import { NodeDetails } from './ui/NodeDetails'
 import { Legend } from './ui/Legend'
 import { ScrollSpacer } from './ui/ScrollSpacer'
+import { TransitionVeil } from './ui/TransitionVeil'
 
 export default function App() {
   useScrollWaypoints()
@@ -55,6 +56,9 @@ export default function App() {
 
       {/* Drives native scroll → camera timeline (only element in normal flow). */}
       <ScrollSpacer />
+
+      {/* Cream dissolve that masks the macro↔micro scene swap. */}
+      <TransitionVeil />
 
       {/* Preloading overlay — sits above everything until assets are ready. */}
       <Preloader />

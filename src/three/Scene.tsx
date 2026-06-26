@@ -17,15 +17,16 @@ import { WAYPOINTS } from '../data/waypoints'
 // dead-center with the United States facing the viewer.
 const INITIAL = waypointCamera(WAYPOINTS[0])
 
-/** The 3D content — swaps between the macro globe and the micro flat map. */
+/** The 3D content — swaps between the macro globe and the micro hub skyline. */
 function SceneContents() {
-  const viewMode = useAtlasStore((s) => s.viewMode)
+  // `renderView` (not `viewMode`) so the swap lands while the dissolve is opaque.
+  const renderView = useAtlasStore((s) => s.renderView)
 
   return (
     <>
       <Lighting />
       <Suspense fallback={null}>
-        {viewMode === 'macro' ? (
+        {renderView === 'macro' ? (
           <>
             <Globe />
             <Clouds />

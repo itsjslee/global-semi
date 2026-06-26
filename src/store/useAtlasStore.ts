@@ -35,7 +35,15 @@ export interface AtlasState {
   closeWhoami: () => void
 
   // ── View mode (globe vs isometric hub) ──────────────────────
+  /** The user's intent (drives UI + the transition veil). */
   viewMode: ViewMode
+  /**
+   * The view actually rendered by the 3D scene. It lags `viewMode` by the
+   * length of the cream dissolve so the globe↔skyline swap happens while the
+   * veil is opaque — making the macro↔micro hand-off feel seamless.
+   */
+  renderView: ViewMode
+  commitView: () => void
   setViewMode: (view: ViewMode) => void
   toggleViewMode: () => void
 
@@ -107,6 +115,8 @@ export const useAtlasStore = create<AtlasState>((set, get) => ({
 
   // ── View mode ───────────────────────────────────────────────
   viewMode: 'macro',
+  renderView: 'macro',
+  commitView: () => set((s) => ({ renderView: s.viewMode })),
   setViewMode: (view) =>
     set((s) => {
       if (view === s.viewMode) return { viewMode: view }
