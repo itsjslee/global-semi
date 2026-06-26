@@ -9,6 +9,7 @@ import { ViewToggle } from './ui/ViewToggle'
 import { Sidebar } from './ui/Sidebar'
 import { ScrollProgress } from './ui/ScrollProgress'
 import { ModeControls } from './ui/ModeControls'
+import { HubControls } from './ui/HubControls'
 import { BrandHeader } from './ui/BrandHeader'
 import { SplashCard } from './ui/SplashCard'
 import { WhoamiModal } from './ui/WhoamiModal'
@@ -42,6 +43,7 @@ export default function App() {
       {/* UI overlay — fixed layers arranged around the centered stage. */}
       <TopBar />
       <ViewToggle />
+      <HubControls />
       <BrandHeader />
       <Sidebar />
       <ScrollProgress />

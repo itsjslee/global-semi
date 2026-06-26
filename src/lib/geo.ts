@@ -126,6 +126,29 @@ export function microCamera(
   return { position, target: focus }
 }
 
+// ── Isometric "micro" hub framing ───────────────────────────────────────────
+
+/**
+ * Camera pose for the isometric regional skyline. The hub grid is centered on
+ * the world origin, so the look target is (0,0,0) — the subject stays locked
+ * dead-center. The camera sits at a fixed iso-style azimuth/elevation and backs
+ * off by an amount proportional to the grid's radius so any hub frames cleanly.
+ */
+export function isoHubCamera(radius: number): {
+  position: THREE.Vector3
+  target: THREE.Vector3
+} {
+  const az = 42 * DEG2RAD // azimuth around +Y
+  const el = 33 * DEG2RAD // elevation above the ground plane
+  const dist = radius * 3.4 + 36
+  const dir = new THREE.Vector3(
+    Math.cos(el) * Math.cos(az),
+    Math.sin(el),
+    Math.cos(el) * Math.sin(az),
+  )
+  return { position: dir.multiplyScalar(dist), target: new THREE.Vector3(0, 0, 0) }
+}
+
 /** Clamp helper. */
 export const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
 

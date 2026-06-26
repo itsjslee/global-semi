@@ -68,7 +68,7 @@ function MarkerLogo({ company, color }: { company: Company; color: string }) {
  */
 export function MarkerPill({ company }: { company: Company }) {
   const color = CATEGORY_COLORS[company.category]
-  const setActiveNode = useAtlasStore((s) => s.setActiveNode)
+  const selectCompany = useAtlasStore((s) => s.selectCompany)
   const setHoverNode = useAtlasStore((s) => s.setHoverNode)
 
   return (
@@ -77,8 +77,8 @@ export function MarkerPill({ company }: { company: Company }) {
       className="marker-pill"
       onClick={(e) => {
         e.stopPropagation()
-        const { activeNode } = useAtlasStore.getState()
-        setActiveNode(activeNode === company.id ? null : company.id)
+        // Macro → dive into this company's regional hub; micro → toggle detail.
+        selectCompany(company.id)
       }}
       onMouseEnter={() => setHoverNode(company.id)}
       onMouseLeave={() => setHoverNode(null)}

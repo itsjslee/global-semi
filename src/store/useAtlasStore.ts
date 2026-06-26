@@ -1,9 +1,13 @@
 import { create } from 'zustand'
 import { WAYPOINTS } from '../data/waypoints'
 import { TRACES } from '../data/traces'
+import { DEFAULT_HUB, HUB_FOR_WAYPOINT, HUB_OF_COMPANY } from '../data/hubs'
 
 export type Mode = 'tour' | 'explore'
-/** Macro = 3D globe, Micro = flat map grid. The canvas stays centered for both. */
+/**
+ * Macro = the 3D globe. Micro = the isometric regional "skyline" of a single
+ * hub (low-poly buildings on a grid). The canvas stays centered for both.
+ */
 export type ViewMode = 'macro' | 'micro'
 
 export interface ManualOffset {
@@ -30,10 +34,24 @@ export interface AtlasState {
   openWhoami: () => void
   closeWhoami: () => void
 
-  // ── View mode (globe vs flat map) ───────────────────────────
+  // ── View mode (globe vs isometric hub) ──────────────────────
   viewMode: ViewMode
   setViewMode: (view: ViewMode) => void
   toggleViewMode: () => void
+
+  // ── Regional hub (the isometric micro view) ─────────────────
+  /** Which hub's skyline the micro view renders / the camera frames. */
+  activeHub: string
+  setHub: (hubId: string) => void
+  /** Descend into a hub's isometric skyline (from a node click or toggle). */
+  enterHub: (hubId: string) => void
+  /** Pop back out to the macro globe. */
+  exitHub: () => void
+  /**
+   * Click handler shared by every marker/building: in macro this dives into the
+   * company's regional hub; in micro it toggles the building's detail panel.
+   */
+  selectCompany: (companyId: string) => void
 
   // ── Camera mode ─────────────────────────────────────────────
   /** 'tour' = guided waypoint camera; 'explore' = free OrbitControls. */
@@ -90,13 +108,51 @@ export const useAtlasStore = create<AtlasState>((set, get) => ({
   // ── View mode ───────────────────────────────────────────────
   viewMode: 'macro',
   setViewMode: (view) =>
-    set((s) =>
-      view === s.viewMode
-        ? { viewMode: view }
-        : // Switching views resets transient camera state for a clean re-frame.
-          { viewMode: view, tracePlaying: false, manual: { ...ZERO_OFFSET } },
-    ),
+    set((s) => {
+      if (view === s.viewMode) return { viewMode: view }
+      // Toggling into micro descends into the hub that matches the current
+      // scroll region, so the view always lands on a populated grid.
+      const hub =
+        view === 'micro'
+          ? HUB_FOR_WAYPOINT[WAYPOINTS[s.activeWaypoint]?.id] ?? s.activeHub
+          : s.activeHub
+      // Switching views resets transient camera state for a clean re-frame.
+      return { viewMode: view, activeHub: hub, tracePlaying: false, manual: { ...ZERO_OFFSET } }
+    }),
   toggleViewMode: () => get().setViewMode(get().viewMode === 'macro' ? 'micro' : 'macro'),
+
+  // ── Regional hub ────────────────────────────────────────────
+  activeHub: DEFAULT_HUB,
+  setHub: (hubId) =>
+    set((s) =>
+      hubId === s.activeHub
+        ? { activeHub: hubId }
+        : { activeHub: hubId, activeNode: null, manual: { ...ZERO_OFFSET } },
+    ),
+  enterHub: (hubId) =>
+    set({
+      viewMode: 'micro',
+      activeHub: hubId,
+      tracePlaying: false,
+      manual: { ...ZERO_OFFSET },
+    }),
+  exitHub: () =>
+    set({ viewMode: 'macro', activeNode: null, manual: { ...ZERO_OFFSET } }),
+  selectCompany: (companyId) =>
+    set((s) => {
+      if (s.viewMode === 'macro') {
+        // Dive from the globe into this company's regional skyline.
+        return {
+          viewMode: 'micro',
+          activeHub: HUB_OF_COMPANY[companyId] ?? s.activeHub,
+          activeNode: companyId,
+          tracePlaying: false,
+          manual: { ...ZERO_OFFSET },
+        }
+      }
+      // Already in a hub → toggle the detail panel for this building.
+      return { activeNode: s.activeNode === companyId ? null : companyId }
+    }),
 
   // ── Camera mode ─────────────────────────────────────────────
   mode: 'tour',

@@ -6,8 +6,7 @@ import { Globe } from './Globe'
 import { Clouds } from './Clouds'
 import { CompanyNodes } from './CompanyNodes'
 import { TraceArcs } from './TraceArcs'
-import { FlatMap } from './FlatMap'
-import { MicroNodes } from './MicroNodes'
+import { RegionalSkyline } from './RegionalSkyline'
 import { CameraRig } from './CameraRig'
 import { Controls } from './Controls'
 import { useAtlasStore } from '../store/useAtlasStore'
@@ -34,10 +33,7 @@ function SceneContents() {
             <TraceArcs />
           </>
         ) : (
-          <>
-            <FlatMap />
-            <MicroNodes />
-          </>
+          <RegionalSkyline />
         )}
       </Suspense>
       <CameraRig />

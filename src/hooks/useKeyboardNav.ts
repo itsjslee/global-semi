@@ -57,7 +57,10 @@ export function useKeyboardNav() {
           s.resetManual()
           break
         case 'Escape':
-          s.setActiveNode(null)
+          // Esc returns to the tour: clear a selection first, else pop out of
+          // the hub back to the macro globe.
+          if (s.activeNode) s.setActiveNode(null)
+          else if (s.viewMode === 'micro') s.exitHub()
           break
         default:
           return

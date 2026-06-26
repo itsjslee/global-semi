@@ -3,8 +3,13 @@ import * as THREE from 'three'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useAtlasStore, WAYPOINT_COUNT, type ManualOffset } from '../store/useAtlasStore'
 import { WAYPOINTS } from '../data/waypoints'
-import { clamp, GLOBE_RADIUS, microCamera, smoothstep, waypointCamera } from '../lib/geo'
+import { clamp, GLOBE_RADIUS, isoHubCamera, smoothstep, waypointCamera } from '../lib/geo'
+import { getHubLayout } from '../data/hubs'
 import { getTraceCurve } from '../lib/traceCurves'
+
+/** Vertical FOV (deg) per view: the narrower micro FOV "flattens" into iso. */
+const MACRO_FOV = 38
+const MICRO_FOV = 24
 
 /** Loops per second the pulse (and camera) travel along the active trace. */
 const TRACE_SPEED = 0.05
@@ -100,26 +105,28 @@ export function CameraRig() {
     }
     if (s.mode === 'explore' || s.tracePlaying) lastInteract.current = now
 
+    // ── FOV: narrow toward an isometric feel in micro, widen back in macro ──
+    const persp = camera as THREE.PerspectiveCamera
+    if (persp.isPerspectiveCamera) {
+      const desiredFov = s.viewMode === 'micro' ? MICRO_FOV : MACRO_FOV
+      if (Math.abs(persp.fov - desiredFov) > 0.05) {
+        persp.fov = THREE.MathUtils.damp(persp.fov, desiredFov, 3, dt)
+        persp.updateProjectionMatrix()
+      }
+    }
+
     if (s.mode === 'explore') return // OrbitControls owns the camera
 
-    // ── Micro (flat map): blend the top-down framing across waypoints ──────
+    // ── Micro: descend into the active hub's isometric skyline ─────────────
     if (s.viewMode === 'micro') {
-      const sp = clamp(s.scrollProgress, 0, WAYPOINT_COUNT - 1)
-      const i = Math.floor(sp)
-      const j = Math.min(i + 1, WAYPOINT_COUNT - 1)
-      const f = smoothstep(sp - i)
-
-      const a = microCamera(WAYPOINTS[i], i)
-      const b = microCamera(WAYPOINTS[j], j)
-      _desiredPos.copy(a.position).lerp(b.position, f)
-      if (manualEngaged(s.manual)) {
-        orbitAroundCenter(_desiredPos, s.manual)
-        _desiredTarget.set(0, 0, 0) // lock lookAt to the map center
-      } else {
-        _desiredTarget.copy(a.target).lerp(b.target, f)
-      }
-      dampVec(camera.position, _desiredPos, 3.5, dt)
-      dampVec(target.current, _desiredTarget, 4.5, dt)
+      const radius = getHubLayout(s.activeHub).radius
+      const iso = isoHubCamera(radius)
+      _desiredPos.copy(iso.position)
+      // Keyboard nudges orbit the iso pose around the grid center.
+      if (manualEngaged(s.manual)) orbitAroundCenter(_desiredPos, s.manual)
+      _desiredTarget.copy(iso.target) // grid center == world origin
+      dampVec(camera.position, _desiredPos, 2.6, dt)
+      dampVec(target.current, _desiredTarget, 3.2, dt)
       camera.lookAt(target.current)
       return
     }
