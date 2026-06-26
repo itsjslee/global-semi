@@ -36,9 +36,11 @@ export function HubControls() {
           ‹
         </button>
 
-        <div className="min-w-[180px] px-1 text-center">
-          <p className="text-[13px] font-bold leading-tight text-ink">{hub.name}</p>
-          <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink/45">{hub.region}</p>
+        <div className="w-[210px] px-1 text-center">
+          <p className="truncate text-[13px] font-bold leading-tight text-ink">{hub.name}</p>
+          <p className="truncate font-mono text-[9px] uppercase tracking-[0.16em] text-ink/45">
+            {hub.region}
+          </p>
         </div>
 
         <button

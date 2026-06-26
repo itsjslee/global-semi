@@ -5,7 +5,6 @@ import { getHubLayout } from '../data/hubs'
 import { PALETTE } from '../lib/colors'
 import { useAtlasStore } from '../store/useAtlasStore'
 import { Building } from './Building'
-import { HubLinks } from './HubLinks'
 import { CityFabric, cityRadius } from './CityFabric'
 
 /** A rounded rectangle Shape, used to extrude the low-poly land "peninsula". */
@@ -113,9 +112,6 @@ export function RegionalSkyline() {
       {layout.placements.map((p) => (
         <Building key={p.company.id} company={p.company} x={p.x} z={p.z} />
       ))}
-
-      {/* Live supply-chain data links for the selected node */}
-      <HubLinks />
     </group>
   )
 }

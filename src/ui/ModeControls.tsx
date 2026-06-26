@@ -1,4 +1,3 @@
-import { TRACES } from '../data/traces'
 import { useAtlasStore } from '../store/useAtlasStore'
 
 /** Generic two-or-more option segmented control. */
@@ -31,19 +30,12 @@ function Segment<T extends string>({
   )
 }
 
-/** Bottom-left controls: Tour/Explore, All/Key, trace picker, and the trace button. */
+/** Bottom-left controls: Tour/Explore and All/Key segmented toggles. */
 export function ModeControls() {
   const mode = useAtlasStore((s) => s.mode)
   const setMode = useAtlasStore((s) => s.setMode)
   const showAll = useAtlasStore((s) => s.showAll)
   const toggleShowAll = useAtlasStore((s) => s.toggleShowAll)
-  const tracePlaying = useAtlasStore((s) => s.tracePlaying)
-  const startTrace = useAtlasStore((s) => s.startTrace)
-  const stopTrace = useAtlasStore((s) => s.stopTrace)
-  const activeTraceId = useAtlasStore((s) => s.activeTraceId)
-  const setTrace = useAtlasStore((s) => s.setTrace)
-  // "Trace the Wafer" rides the 3D arcs — only meaningful in the macro globe.
-  const isMacro = useAtlasStore((s) => s.viewMode === 'macro')
 
   return (
     <div className="pointer-events-auto fixed bottom-6 left-6 z-40 flex flex-col items-start gap-2.5">
@@ -67,38 +59,6 @@ export function ModeControls() {
           ]}
         />
       </div>
-
-      {isMacro && (
-        <>
-          <div className="flex items-center gap-1 rounded-full bg-paper/90 p-1 shadow-rail ring-1 ring-ink/5 backdrop-blur-md">
-            {TRACES.map((t) => {
-              const on = t.id === activeTraceId
-              return (
-                <button
-                  key={t.id}
-                  onClick={() => setTrace(t.id)}
-                  title={t.description}
-                  className={`rounded-full px-3 py-1 text-[11px] font-semibold transition-colors ${
-                    on ? 'text-paper' : 'text-ink/55 hover:text-ink'
-                  }`}
-                  style={on ? { background: t.color } : undefined}
-                >
-                  {t.name.split(' ')[0]}
-                </button>
-              )
-            })}
-          </div>
-
-          <button
-            onClick={() => (tracePlaying ? stopTrace() : startTrace(activeTraceId))}
-            className={`rounded-full px-5 py-2.5 text-[12px] font-bold uppercase tracking-wider text-paper shadow-rail transition hover:brightness-105 ${
-              tracePlaying ? 'bg-coral' : 'bg-mint'
-            }`}
-          >
-            {tracePlaying ? '■ Stop Trace' : '▶ Trace the Wafer'}
-          </button>
-        </>
-      )}
     </div>
   )
 }

@@ -5,14 +5,10 @@ import { useAtlasStore, WAYPOINT_COUNT, type ManualOffset } from '../store/useAt
 import { WAYPOINTS } from '../data/waypoints'
 import { clamp, GLOBE_RADIUS, isoHubCamera, smoothstep, waypointCamera } from '../lib/geo'
 import { getHubLayout } from '../data/hubs'
-import { getTraceCurve } from '../lib/traceCurves'
 
 /** Vertical FOV (deg) per view: the narrower micro FOV "flattens" into iso. */
 const MACRO_FOV = 38
 const MICRO_FOV = 24
-
-/** Loops per second the pulse (and camera) travel along the active trace. */
-const TRACE_SPEED = 0.05
 
 /** Idle auto-rotation: spin speed (rad/s) and how long after an interaction it resumes. */
 const AUTO_ROTATE_SPEED = 0.06
@@ -23,10 +19,6 @@ const WORLD_UP = new THREE.Vector3(0, 1, 0)
 // Scratch objects reused every frame (single rig instance → safe to share).
 const _desiredPos = new THREE.Vector3()
 const _desiredTarget = new THREE.Vector3()
-const _at = new THREE.Vector3()
-const _ahead = new THREE.Vector3()
-const _tan = new THREE.Vector3()
-const _up = new THREE.Vector3()
 const _off = new THREE.Vector3()
 const _dirN = new THREE.Vector3()
 const _right = new THREE.Vector3()
@@ -72,10 +64,9 @@ function orbitAroundCenter(pos: THREE.Vector3, manual: ManualOffset) {
 
 /**
  * Drives the camera in 'tour' mode:
- *   • Trace playing → fly behind the moving pulse along the active arc.
  *   • Macro → blend between waypoints, always looking at the globe center, with
  *     a slow idle auto-rotation on the global hero that pauses on interaction.
- *   • Micro → top-down flat-map framing.
+ *   • Micro → isometric framing of the active hub, centered on the origin.
  * In 'explore' mode it yields entirely to OrbitControls.
  */
 export function CameraRig() {
@@ -103,7 +94,7 @@ export function CameraRig() {
       prevScroll.current = s.scrollProgress
       lastInteract.current = now
     }
-    if (s.mode === 'explore' || s.tracePlaying) lastInteract.current = now
+    if (s.mode === 'explore') lastInteract.current = now
 
     // ── FOV: narrow toward an isometric feel in micro, widen back in macro ──
     const persp = camera as THREE.PerspectiveCamera
@@ -129,31 +120,6 @@ export function CameraRig() {
       dampVec(target.current, _desiredTarget, 3.2, dt)
       camera.lookAt(target.current)
       return
-    }
-
-    if (s.tracePlaying) {
-      const curve = getTraceCurve(s.activeTraceId)
-      if (curve) {
-        const p = (s.tourProgress + dt * TRACE_SPEED) % 1
-        s.setTourProgress(p)
-
-        curve.getPointAt(clamp(p, 0, 1), _at)
-        curve.getPointAt(Math.min(p + 0.03, 1), _ahead)
-
-        _tan.copy(_ahead).sub(_at)
-        if (_tan.lengthSq() < 1e-6) _tan.set(0, 0, 1)
-        _tan.normalize()
-        _up.copy(_at).normalize()
-
-        // Behind and above the pulse → cinematic chase cam.
-        _desiredPos.copy(_at).addScaledVector(_tan, -14).addScaledVector(_up, 9)
-        _desiredTarget.copy(_ahead)
-
-        dampVec(camera.position, _desiredPos, 5, dt)
-        dampVec(target.current, _desiredTarget, 6, dt)
-        camera.lookAt(target.current)
-        return
-      }
     }
 
     // ── Macro waypoint blend (always looking at the globe center) ─────────
