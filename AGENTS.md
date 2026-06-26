@@ -31,3 +31,12 @@ When adding or altering data entries, always match them to these 7 precise suppl
 5. Manufacturing (Foundries)
 6. OSAT (Packaging & Test)
 7. Distribution & Systems Integration
+
+## Cursor Cloud specific instructions
+
+This is a single-service, client-only app: a Vite + React + TypeScript + Three.js (R3F) frontend. There is no backend, database, or env/secrets requirement.
+
+- Run the dev server with `npm run dev` (Vite on http://localhost:5173). Use `--host` only if you need LAN exposure.
+- Lint: there is no ESLint config; `npm run typecheck` (`tsc --noEmit`) is the static-check command. `npm run build` also runs `tsc --noEmit` before `vite build`.
+- The app starts with a cream preloader/splash overlay; dismiss it (click through) before the 3D globe and UI become interactive.
+- The production build emits a large (~2 MB) single JS chunk; the Vite "chunks larger than 500 kB" warning is expected and not an error.
