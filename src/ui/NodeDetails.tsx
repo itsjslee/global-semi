@@ -1,5 +1,6 @@
 import { CATEGORY_LABELS, COMPANY_BY_ID } from '../data/companies'
 import { CATEGORY_COLORS } from '../lib/colors'
+import { LANDMARK_NAME } from '../data/landmarks'
 import { useAtlasStore } from '../store/useAtlasStore'
 
 /** Detail card shown when a company marker is selected. */
@@ -32,7 +33,12 @@ export function NodeDetails() {
           </span>
         </div>
         <h3 className="mt-1.5 text-xl font-bold leading-tight text-ink">{company.name}</h3>
-        <p className="text-xs font-medium text-ink/50">{company.site}</p>
+        <p className="text-xs font-medium text-ink/50">
+          {company.site}
+          {LANDMARK_NAME[company.id] && (
+            <span className="text-ink/40"> · {LANDMARK_NAME[company.id]}</span>
+          )}
+        </p>
         <p className="mt-2 text-sm leading-relaxed text-ink/70">{company.blurb}</p>
       </div>
     </div>
