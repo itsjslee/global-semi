@@ -244,11 +244,18 @@ function MegaFab({ m, color, detail, company }: { m: Mats; color: string; detail
         <boxGeometry args={[14.2, 0.9, 0.45]} />
         <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.55} roughness={0.6} toneMapped={false} />
       </mesh>
-      {/* TSMC's circular "wafer pond" out front */}
+      {/* TSMC's circular "wafer pond" out front (sits on the ground plane) */}
       {isTsmc && (
-        <mesh position={[0, 1.05, 8.4]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow material={m.water}>
-          <cylinderGeometry args={[3.4, 3.4, 0.2, 28]} />
-        </mesh>
+        <group position={[0, 0, 9.5]}>
+          <mesh position={[0, 0.14, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow material={m.water}>
+            <cylinderGeometry args={[4, 4, 0.28, 32]} />
+          </mesh>
+          {/* Light stone rim so the pond reads against the platform */}
+          <mesh position={[0, 0.16, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <ringGeometry args={[4, 4.7, 32]} />
+            <meshStandardMaterial color={'#D9D2C0'} roughness={1} side={THREE.DoubleSide} />
+          </mesh>
+        </group>
       )}
     </group>
   )

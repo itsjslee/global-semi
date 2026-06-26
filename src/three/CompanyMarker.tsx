@@ -18,7 +18,7 @@ const smooth01 = (x: number) => {
 
 const WORLD_UP = new THREE.Vector3(0, 1, 0)
 /** Shrinks the full-scale hub buildings down to globe-surface props. */
-const GLOBE_BUILD_SCALE = 0.34
+const GLOBE_BUILD_SCALE = 0.4
 
 export function CompanyMarker({ company }: { company: Company }) {
   const color = CATEGORY_COLORS[company.category]
