@@ -59,12 +59,12 @@ export function CompanyMarker({ company }: { company: Company }) {
     const sc = THREE.MathUtils.lerp(building.scale.x, Math.max(0.0001, facing) * targetScale, 0.2)
     building.scale.setScalar(sc)
 
-    // ── Labels only on hover / selection / the active region — declutter ──
+    // ── Names appear only on hover / selection so the buildings carry the
+    //    map — no more wall of overlapping logo pills. ──────────────────────
     if (wrap) {
-      const focus = WAYPOINTS[activeWaypoint]?.companies ?? []
-      const labeled = isActive || isHover || (facing > 0.6 && focus.includes(company.id))
+      const labeled = isActive || isHover
       wrap.style.opacity = labeled ? '1' : '0'
-      wrap.style.pointerEvents = labeled && facing > 0.5 ? 'auto' : 'none'
+      wrap.style.pointerEvents = facing > 0.5 ? 'auto' : 'none'
       wrap.classList.toggle('is-active', isActive)
     }
   })
