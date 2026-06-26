@@ -73,6 +73,20 @@ canvas {
     @apply mx-auto h-3 w-px bg-ink/30;
   }
 
+  /* Region beacon label on the macro globe. */
+  .region-pin-label {
+    @apply pointer-events-auto flex select-none items-center gap-2 whitespace-nowrap
+           rounded-full bg-ink/90 py-2 pl-2.5 pr-4 text-[15px] font-bold tracking-tight
+           text-paper shadow-card ring-1 ring-white/10 backdrop-blur-sm
+           transition-transform duration-200 ease-out;
+  }
+  .region-pin-label:hover {
+    @apply -translate-y-0.5 brightness-110;
+  }
+  .region-pin-dot {
+    @apply h-3 w-3 shrink-0 rounded-full bg-mint ring-2 ring-paper/70;
+  }
+
   /* Marker visibility/emphasis (opacity is driven imperatively per frame). */
   .marker-wrap {
     transition: opacity 150ms ease-out;

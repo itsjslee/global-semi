@@ -6,6 +6,7 @@ import { Globe } from './Globe'
 import { Clouds } from './Clouds'
 import { CompanyNodes } from './CompanyNodes'
 import { TraceArcs } from './TraceArcs'
+import { RegionPins } from './RegionPins'
 import { RegionalSkyline } from './RegionalSkyline'
 import { CameraRig } from './CameraRig'
 import { Controls } from './Controls'
@@ -31,6 +32,7 @@ function SceneContents() {
             <Globe />
             <Clouds />
             <CompanyNodes />
+            <RegionPins />
             <TraceArcs />
           </>
         ) : (
