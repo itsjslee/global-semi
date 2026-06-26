@@ -9,12 +9,14 @@ import { ViewToggle } from './ui/ViewToggle'
 import { Sidebar } from './ui/Sidebar'
 import { ScrollProgress } from './ui/ScrollProgress'
 import { ModeControls } from './ui/ModeControls'
+import { HubControls } from './ui/HubControls'
 import { BrandHeader } from './ui/BrandHeader'
 import { SplashCard } from './ui/SplashCard'
 import { WhoamiModal } from './ui/WhoamiModal'
 import { NodeDetails } from './ui/NodeDetails'
 import { Legend } from './ui/Legend'
 import { ScrollSpacer } from './ui/ScrollSpacer'
+import { TransitionVeil } from './ui/TransitionVeil'
 
 export default function App() {
   useScrollWaypoints()
@@ -42,6 +44,7 @@ export default function App() {
       {/* UI overlay — fixed layers arranged around the centered stage. */}
       <TopBar />
       <ViewToggle />
+      <HubControls />
       <BrandHeader />
       <Sidebar />
       <ScrollProgress />
@@ -53,6 +56,9 @@ export default function App() {
 
       {/* Drives native scroll → camera timeline (only element in normal flow). */}
       <ScrollSpacer />
+
+      {/* Cream dissolve that masks the macro↔micro scene swap. */}
+      <TransitionVeil />
 
       {/* Preloading overlay — sits above everything until assets are ready. */}
       <Preloader />

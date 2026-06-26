@@ -6,8 +6,7 @@ import { Globe } from './Globe'
 import { Clouds } from './Clouds'
 import { CompanyNodes } from './CompanyNodes'
 import { TraceArcs } from './TraceArcs'
-import { FlatMap } from './FlatMap'
-import { MicroNodes } from './MicroNodes'
+import { RegionalSkyline } from './RegionalSkyline'
 import { CameraRig } from './CameraRig'
 import { Controls } from './Controls'
 import { useAtlasStore } from '../store/useAtlasStore'
@@ -18,15 +17,16 @@ import { WAYPOINTS } from '../data/waypoints'
 // dead-center with the United States facing the viewer.
 const INITIAL = waypointCamera(WAYPOINTS[0])
 
-/** The 3D content — swaps between the macro globe and the micro flat map. */
+/** The 3D content — swaps between the macro globe and the micro hub skyline. */
 function SceneContents() {
-  const viewMode = useAtlasStore((s) => s.viewMode)
+  // `renderView` (not `viewMode`) so the swap lands while the dissolve is opaque.
+  const renderView = useAtlasStore((s) => s.renderView)
 
   return (
     <>
       <Lighting />
       <Suspense fallback={null}>
-        {viewMode === 'macro' ? (
+        {renderView === 'macro' ? (
           <>
             <Globe />
             <Clouds />
@@ -34,10 +34,7 @@ function SceneContents() {
             <TraceArcs />
           </>
         ) : (
-          <>
-            <FlatMap />
-            <MicroNodes />
-          </>
+          <RegionalSkyline />
         )}
       </Suspense>
       <CameraRig />
